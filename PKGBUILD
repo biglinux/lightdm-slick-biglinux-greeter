@@ -40,7 +40,7 @@ package() {
     make DESTDIR="${pkgdir}" install
 
     # adjust launcher name
-    mv "${pkgdir}/usr/share/xgreeters/${_pkgname}.desktop" \
+    mv "${pkgdir}/usr/share/xgreeters/slick-greeter.desktop" \
         "${pkgdir}/usr/share/xgreeters/$pkgname.desktop"
 
     # Install default conf
