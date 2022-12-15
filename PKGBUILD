@@ -1,35 +1,32 @@
-pkgname='lightdm-slick-biglinux-greeter'
-_pkgname='slick-biglinux-greeter'
+pkgname=lightdm-slick-biglinux-greeter
+_pkgname=slick-biglinux-greeter
 pkgver=$(date +%y.%m.%d)
-_pkgver=1.2.0
+_pkgver=1.6.0
 pkgrel=$(date +%H%M)
-pkgdesc='A slick-looking LightDM greeter for BigLinux'
-arch=(i686 x86_64)
+pkgdesc='A slick-biglinux-looking LightDM greeter'
+arch=('x86_64')
 url="https://github.com/linuxmint/slick-greeter"
 license=('GPL3')
-source=("${url}/archive/${_pkgver}.tar.gz"
-    "${_pkgname}.conf"
-    "${_pkgname}.png"
-    'schema-defaults.patch')
-depends=('cairo' 'freetype2' 'gtk3' 'libcanberra' 'libxext' 'lightdm' 'pixman')
-makedepends=('intltool' 'gnome-common' 'vala')
-backup=('etc/lightdm/slick-greeter.conf')
-sha256sums=('9f0ca551dc921c83e6c302fa8582b615ff1423c691eb7fa711719af64ee8166c'
-            'a015a40fcd2ba09d3744aff7126041d3f2ce2ae6e2939f07b45cd7ae0a482894'
-            '1295fc79a111af0834ab95ea2a3a9d2684c42a062b21d88a1a0c88da9ed5ca16'
-            '119e0b5f449a66946ae257ce80d6a7b2a19d2f9bdfd53c2a52c1a47b676829c3')
-install=slick-biglinux-greeter.install
+depends=('cairo' 'freetype2' 'gtk3' 'libcanberra' 'libxext' 'lightdm' 'pixman'
+         'python' 'xorg-server')
+makedepends=('intltool' 'vala' 'gnome-common')
+optdepends=('numlockx: enable numerical keypad on supported keyboard')
+backup=("etc/lightdm/${_pkgname}.conf")
+install="${_pkgname}.install"
+source=("slick-greeter-$_pkgver.tar.gz::${url}/archive/${_pkgver}.tar.gz"
+        "${_pkgname}.conf"
+        "${_pkgname}.png")
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP')
 
 prepare() {
-    cd ${_pkgname}-${_pkgver}
-    patch -p1 -i ../schema-defaults.patch
+    cd "slick-greeter-${_pkgver}"
+    NOCONFIGURE=1 ./autogen.sh
 }
 
 build() {
-    cd ${_pkgname}-${_pkgver}
-    aclocal --install
-    autoreconf -vfi
-    intltoolize -f
+    cd "slick-greeter-${_pkgver}"
     ./configure \
         --prefix=/usr \
         --sysconfdir=/etc \
@@ -39,12 +36,14 @@ build() {
 }
 
 package() {
-    cd ${_pkgname}-${_pkgver}
+    cd "slick-greeter-${_pkgver}"
     make DESTDIR="${pkgdir}" install
+
     # adjust launcher name
-    mv $pkgdir/usr/share/xgreeters/slick-greeter.desktop \
-      $pkgdir/usr/share/xgreeters/lightdm-slick-greeter.desktop
-    # Install default conf 
-    install -Dm644 $srcdir/$_pkgname.conf $pkgdir/etc/lightdm/$_pkgname.conf
-    install -Dm644 $srcdir/$_pkgname.png $pkgdir/usr/share/slick-greeter/$_pkgname.png
+    mv "${pkgdir}/usr/share/xgreeters/${_pkgname}.desktop" \
+        "${pkgdir}/usr/share/xgreeters/$pkgname.desktop"
+
+    # Install default conf
+    install -Dm644 "${srcdir}/${_pkgname}.conf" -t "${pkgdir}/etc/lightdm/"
+    install -Dm644 "${srcdir}/${_pkgname}.png" -t "${pkgdir}/usr/share/${_pkgname}/"
 }
