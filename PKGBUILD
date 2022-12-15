@@ -1,5 +1,5 @@
 pkgname=lightdm-slick-biglinux-greeter
-_pkgname=slick-biglinux-greeter
+_pkgname=slick-greeter
 pkgver=$(date +%y.%m.%d)
 _pkgver=1.6.0
 pkgrel=$(date +%H%M)
@@ -9,6 +9,7 @@ url="https://github.com/linuxmint/slick-greeter"
 license=('GPL3')
 depends=('cairo' 'freetype2' 'gtk3' 'libcanberra' 'libxext' 'lightdm' 'pixman'
          'python' 'xorg-server')
+conflicts=('lightdm-slick-greeter')
 makedepends=('intltool' 'vala' 'gnome-common')
 optdepends=('numlockx: enable numerical keypad on supported keyboard')
 backup=("etc/lightdm/${_pkgname}.conf")
@@ -19,14 +20,13 @@ source=("slick-greeter-$_pkgver.tar.gz::${url}/archive/${_pkgver}.tar.gz"
 sha256sums=('SKIP'
             'SKIP'
             'SKIP')
-
 prepare() {
-    cd "slick-greeter-${_pkgver}"
+    cd "${_pkgname}-${_pkgver}"
     NOCONFIGURE=1 ./autogen.sh
 }
 
 build() {
-    cd "slick-greeter-${_pkgver}"
+    cd "${_pkgname}-${_pkgver}"
     ./configure \
         --prefix=/usr \
         --sysconfdir=/etc \
@@ -36,11 +36,11 @@ build() {
 }
 
 package() {
-    cd "slick-greeter-${_pkgver}"
+    cd "${_pkgname}-${_pkgver}"
     make DESTDIR="${pkgdir}" install
 
     # adjust launcher name
-    mv "${pkgdir}/usr/share/xgreeters/slick-greeter.desktop" \
+    mv "${pkgdir}/usr/share/xgreeters/${_pkgname}.desktop" \
         "${pkgdir}/usr/share/xgreeters/$pkgname.desktop"
 
     # Install default conf
