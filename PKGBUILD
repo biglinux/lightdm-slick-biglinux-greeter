@@ -1,12 +1,14 @@
 pkgname='lightdm-slick-biglinux-greeter'
 _pkgname='slick-biglinux-greeter'
-pkgver=1.2.0
-pkgrel=1
+pkgver=$(date +%y.%m.%d)
+_pkgver=1.6.0
+pkgrel=$(date +%H%M)
 pkgdesc='A slick-looking LightDM greeter for BigLinux'
 arch=(i686 x86_64)
-url="https://github.com/linuxmint/${_pkgname}"
+url="https://github.com/linuxmint/slick-greeter"
 license=('GPL3')
-source=("${url}/archive/${pkgver}.tar.gz"
+https://github.com/linuxmint/slick-greeter/archive/refs/tags/1.6.0.tar.gz
+source=("${url}/archive/${_pkgver}.tar.gz"
     "${_pkgname}.conf"
     "${_pkgname}.png"
     'schema-defaults.patch')
@@ -20,12 +22,12 @@ sha256sums=('9f0ca551dc921c83e6c302fa8582b615ff1423c691eb7fa711719af64ee8166c'
 install=slick-biglinux-greeter.install
 
 prepare() {
-    cd ${_pkgname}-${pkgver}
+    cd ${_pkgname}-${_pkgver}
     patch -p1 -i ../schema-defaults.patch
 }
 
 build() {
-    cd ${_pkgname}-${pkgver}
+    cd ${_pkgname}-${_pkgver}
     aclocal --install
     autoreconf -vfi
     intltoolize -f
@@ -38,7 +40,7 @@ build() {
 }
 
 package() {
-    cd ${_pkgname}-${pkgver}
+    cd ${_pkgname}-${_pkgver}
     make DESTDIR="${pkgdir}" install
     # adjust launcher name
     mv $pkgdir/usr/share/xgreeters/slick-greeter.desktop \
