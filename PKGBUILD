@@ -16,8 +16,10 @@ backup=("etc/lightdm/${_pkgname}.conf")
 install="${_pkgname}.install"
 source=("slick-greeter-$_pkgver.tar.gz::${url}/archive/${_pkgver}.tar.gz"
         "${_pkgname}.conf"
+        "${_pkgname}.jpg"
         "${_pkgname}.png")
 sha256sums=('SKIP'
+            'SKIP'
             'SKIP'
             'SKIP')
 prepare() {
@@ -45,5 +47,6 @@ package() {
 
     # Install default conf
     install -Dm644 "${srcdir}/${_pkgname}.conf" -t "${pkgdir}/etc/lightdm/"
+    install -Dm644 "${srcdir}/${_pkgname}.jpg" -t "${pkgdir}/usr/share/${_pkgname}/"  
     install -Dm644 "${srcdir}/${_pkgname}.png" -t "${pkgdir}/usr/share/${_pkgname}/"
 }
